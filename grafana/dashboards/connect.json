@@ -1,0 +1,210 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 169,
+  "links": [],
+  "panels": [
+    {
+      "type": "table",
+      "title": "Connect Worker Status",
+      "datasource": "Prometheus",
+      "gridPos": {"x": 0, "y": 0, "w": 24, "h": 6},
+      "targets": [
+        {
+          "expr": "kafka_connect_app_info{instance=~\"$instance\"}",
+          "format": "table",
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (instance) (kafka_connect_worker_connector_count{instance=~\"$instance\"})",
+          "format": "table",
+          "refId": "B"
+        },
+        {
+          "expr": "sum by (instance) (kafka_connect_worker_task_count{instance=~\"$instance\"})",
+          "format": "table",
+          "refId": "C"
+        },
+        {
+          "expr": "sum by (instance) (kafka_connect_worker_connector_startup_success_total{instance=~\"$instance\"})",
+          "format": "table",
+          "refId": "D"
+        },
+        {
+          "expr": "sum by (instance) (kafka_connect_worker_connector_startup_failure_total{instance=~\"$instance\"})",
+          "format": "table",
+          "refId": "E"
+        }
+      ],
+      "showHeader": true,
+      "sort": {"col": 0, "desc": false}
+    },
+    {
+      "type": "table",
+      "title": "Connectors Details",
+      "datasource": "Prometheus",
+      "gridPos": {"x": 0, "y": 6, "w": 24, "h": 8},
+      "targets": [
+        {
+          "expr": "kafka_connect_connector_info{instance=~\"$instance\",connector=~\"$connector\"}",
+          "format": "table",
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (connector) (kafka_connect_worker_connector_total_task_count{instance=~\"$instance\",connector=~\"$connector\"})",
+          "format": "table",
+          "refId": "B"
+        },
+        {
+          "expr": "sum by (connector) (kafka_connect_worker_connector_running_task_count{instance=~\"$instance\",connector=~\"$connector\"})",
+          "format": "table",
+          "refId": "C"
+        },
+        {
+          "expr": "sum by (connector) (kafka_connect_worker_connector_failed_task_count{instance=~\"$instance\",connector=~\"$connector\"})",
+          "format": "table",
+          "refId": "D"
+        }
+      ],
+      "showHeader": true,
+      "sort": {"col": 0, "desc": false}
+    },
+    {
+      "type": "graph",
+      "title": "Source Record Poll Rate",
+      "datasource": "Prometheus",
+      "gridPos": {"x": 0, "y": 14, "w": 12, "h": 6},
+      "targets": [
+        {
+          "expr": "rate(kafka_connect_source_task_source_record_poll_total{instance=~\"$instance\",connector=~\"$connector\"}[1m])",
+          "refId": "A",
+          "legendFormat": "{{connector}}-{{task}}"
+        }
+      ],
+      "yaxes": [{"format": "ops"}, {"format": "short"}],
+      "lines": true,
+      "linewidth": 1,
+      "points": true
+    },
+    {
+      "type": "graph",
+      "title": "Source Record Write Rate",
+      "datasource": "Prometheus",
+      "gridPos": {"x": 12, "y": 14, "w": 12, "h": 6},
+      "targets": [
+        {
+          "expr": "rate(kafka_connect_source_task_source_record_write_total{instance=~\"$instance\",connector=~\"$connector\"}[1m])",
+          "refId": "A",
+          "legendFormat": "{{connector}}-{{task}}"
+        }
+      ],
+      "yaxes": [{"format": "ops"}, {"format": "short"}],
+      "lines": true,
+      "linewidth": 1,
+      "points": true
+    },
+    {
+      "type": "graph",
+      "title": "Record Size Average",
+      "datasource": "Prometheus",
+      "gridPos": {"x": 0, "y": 20, "w": 12, "h": 6},
+      "targets": [
+        {
+          "expr": "kafka_producer_record_size_avg{clientId=\"connector-producer-postgres-source-0\",instance=\"kafka-connect:9876\"}",
+          "refId": "A",
+          "legendFormat": "{{connector}}-{{task}}"
+        }
+      ],
+      "yaxes": [{"format": "decbytes"}, {"format": "short"}],
+      "lines": true,
+      "linewidth": 1,
+      "points": true
+    },
+    {
+      "type": "graph",
+      "title": "Batch Size Average",
+      "datasource": "Prometheus",
+      "gridPos": {"x": 12, "y": 20, "w": 12, "h": 6},
+      "targets": [
+        {
+          "expr": "kafka_connect_connector_task_batch_size_avg{instance=\"kafka-connect:9876\",task=\"0\"}",
+          "refId": "A",
+          "legendFormat": "{{connector}}-{{task}}"
+        }
+      ],
+      "yaxes": [{"format": "decbytes"}, {"format": "short"}],
+      "lines": true,
+      "linewidth": 1,
+      "points": true
+    },
+    {
+      "type": "graph",
+      "title": "Record Per Request Avg",
+      "datasource": "Prometheus",
+      "gridPos": {"x": 0, "y": 26, "w": 12, "h": 6},
+      "targets": [
+        {
+          "expr": "kafka_producer_records_per_request_avg{clientId=\"connector-producer-postgres-source-0\",instance=\"kafka-connect:9876\"}",
+          "refId": "A",
+          "legendFormat": "{{connector}}-{{task}}"
+        }
+      ],
+      "yaxes": [{"format": "short"}, {"format": "ms"}],
+      "lines": true,
+      "linewidth": 1,
+      "points": true
+    },
+    {
+      "type": "graph",
+      "title": "Record Send AVG",
+      "datasource": "Prometheus",
+      "gridPos": {"x": 12, "y": 26, "w": 12, "h": 6},
+      "targets": [
+        {
+          "expr": "kafka_producer_topic_record_send_total{clientId=\"connector-producer-postgres-source-0\",instance=\"kafka-connect:9876\",topic=\"postgresql-jdbc-bulk-users\"}",
+          "refId": "A",
+          "legendFormat": "{{connector}}-{{task}}"
+        }
+      ],
+      "yaxes": [{"format": "item"}, {"format": "item"}],
+      "lines": true,
+      "linewidth": 1,
+      "points": true
+    }
+  ],
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": ["Debezium", "Kafka Connect", "CDC", "PostgreSQL"],
+  "templating": {
+    "list": [
+      {
+        "name": "instance",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(kafka_connect_app_info, instance)",
+        "multi": true,
+        "includeAll": true,
+        "refresh": 2
+      },
+      {
+        "name": "connector",
+        "type": "query",
+        "datasource": "Prometheus",
+        "query": "label_values(kafka_connect_connector_info, connector)",
+        "multi": true,
+        "includeAll": true,
+        "refresh": 2
+      }
+    ]
+  },
+  "time": {"from": "now-1h", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Debezium PostgreSQL CDC Dashboard",
+  "version": 1
+}

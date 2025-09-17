@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # Kafka Connect
+  - job_name: 'kafka-connect'
+    static_configs:
+      - targets: ['connect:9404']
+
+  # Kafka brokers
+  - job_name: 'kafka-broker'
+    static_configs:
+      - targets: ['kafka:7071'] # Если подключить JMX Exporter к Kafka, порт 7071 можно использовать
+
+  # Zookeeper
+  - job_name: 'zookeeper'
+    static_configs:
+      - targets: ['zookeeper:2181'] # Для Zookeeper JMX нужно будет отдельный экспортер
